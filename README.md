@@ -1,13 +1,13 @@
-# Flutter GPT Chat App
+# Flutter GPT-4 Chat App
 
-A Flutter chat app that uses the GPT (Generative Pre-trained Transformer) to generate responses and DALLE to generate images based on user's input.
+A Flutter chat app that uses the GPT-4 to generate responses and DALLE to generate images based on user's input.
 
 ## Features
 
-- Chat with a GPT AI model
+- Chat with a GPT-4 AI model
 - Generate image responses based on user prompt
-- Theme mode switcher (Light/Dark)
 - Responsive layout for mobile, tablet, and desktop devices
+- Theme mode switcher (Light/Dark)
 - Save and load chat history
 
 ## Getting Started
