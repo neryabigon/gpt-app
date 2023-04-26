@@ -1,4 +1,3 @@
-```
 # Flutter GPT Chat App
 
 A Flutter chat app that uses the GPT (Generative Pre-trained Transformer) to generate responses and DALLE to generate images based on user's input.
@@ -46,5 +45,3 @@ flutter run
 ## Contributing
 
 If you want to contribute to this project, please follow the guidelines provided in the `CONTRIBUTING.md` file.
-
-```
