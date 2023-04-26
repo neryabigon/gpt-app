@@ -9,6 +9,7 @@ A Flutter chat app that uses the GPT-4 to generate responses and DALLE to genera
 - Responsive layout for mobile, tablet, and desktop devices
 - Theme mode switcher (Light/Dark)
 - Save and load chat history
+- Accesibility tooltips for buttons
 
 ## Getting Started
 
