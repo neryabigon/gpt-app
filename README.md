@@ -40,7 +40,13 @@ flutter run
 
 ## Screenshots
 
-(Include screenshots of the app on different devices)
+![image](https://user-images.githubusercontent.com/66886354/234530535-90ac1c95-2af8-4791-b76e-b1fea9474b63.png)  
+
+
+https://user-images.githubusercontent.com/66886354/234531566-acf68c2b-4726-4fa3-a08f-4b779011212d.mp4
+
+
+
 
 ## Contributing
 
