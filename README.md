@@ -1,16 +1,50 @@
-# gpt
+```
+# Flutter GPT Chat App
 
-cross platform gpt tryouts
+A Flutter chat app that uses the GPT (Generative Pre-trained Transformer) to generate responses and DALLE to generate images based on user's input.
+
+## Features
+
+- Chat with a GPT AI model
+- Generate image responses based on user prompt
+- Theme mode switcher (Light/Dark)
+- Responsive layout for mobile, tablet, and desktop devices
+- Save and load chat history
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+To get started with the Flutter GPT Chat App, follow these steps:
 
-A few resources to get you started if this is your first Flutter project:
+1. Clone the repository:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+```
+git clone https://github.com/yourusername/flutter_gpt_chat_app.git
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+2. Navigate to the project directory:
+
+```
+cd flutter_gpt_chat_app
+```
+
+3. Install dependencies:
+
+```
+flutter pub get
+```
+
+4. Run the app:
+
+```
+flutter run
+```
+
+## Screenshots
+
+(Include screenshots of the app on different devices)
+
+## Contributing
+
+If you want to contribute to this project, please follow the guidelines provided in the `CONTRIBUTING.md` file.
+
+```
