@@ -7,14 +7,14 @@ import '../../components/myNavRail.dart';
 import '../../gpt/models/chat_history_manager.dart';
 
 class DesktopScaffold extends StatefulWidget {
-  const DesktopScaffold(
-      {super.key,
-      required this.useLightMode,
-      required this.handleBrightnessChange,});
+  const DesktopScaffold({
+    super.key,
+    required this.useLightMode,
+    required this.handleBrightnessChange,
+  });
 
   final bool useLightMode;
   final Function(bool useLightMode) handleBrightnessChange;
-
 
   @override
   State<DesktopScaffold> createState() => _DesktopScaffoldState();
@@ -24,15 +24,24 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
   // Use singleton instances
   final GptService _gptService = GptService();
   final ChatHistoryManager _chatHistoryManager = ChatHistoryManager();
+  final ValueNotifier<bool> refreshNotifier = ValueNotifier<bool>(false);
+
+  void refresh() {
+    setState(() {
+      refreshNotifier.value = !refreshNotifier.value;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: MyAppBar(
-          useLightMode: widget.useLightMode,
-          handleBrightnessChange: widget.handleBrightnessChange,
-          showExtraIcons: false),
+        useLightMode: widget.useLightMode,
+        handleBrightnessChange: widget.handleBrightnessChange,
+        showExtraIcons: false,
+        onRefreshChatHistory: refresh,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
@@ -51,6 +60,7 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
                 gptService: _gptService,
                 chatHistoryManager: _chatHistoryManager,
                 showExtraIcons: true,
+                onRefreshChatHistory: refresh,
               ),
             ),
             // second half of page
@@ -60,22 +70,23 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
-                      height: 400,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: Theme.of(context).colorScheme.secondaryContainer,
-                      ),
+                        height: 400,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color:
+                              Theme.of(context).colorScheme.secondaryContainer,
+                        ),
                         child: ChatHistoryWidget(
                           useLightMode: widget.useLightMode,
                           handleBrightnessChange: widget.handleBrightnessChange,
-                          chatHistoryManager: ChatHistoryManager(),
+                          chatHistoryManager: _chatHistoryManager,
                           onLoadChat: (messages) {
                             setState(() {
                               _gptService.messages = messages;
                             });
                           },
-                        )
-                    ),
+                            refreshNotifier: refreshNotifier,
+                        )),
                   ),
                   // list of stuff
                   Expanded(
@@ -86,7 +97,6 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
                           borderRadius: BorderRadius.circular(8),
                           color: Theme.of(context).colorScheme.secondary,
                         ),
-
                       ),
                     ),
                   ),

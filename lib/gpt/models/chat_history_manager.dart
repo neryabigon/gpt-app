@@ -22,7 +22,12 @@ class ChatHistoryManager {
 
   Future<File> get _localFile async {
     final path = await _localPath;
-    return File('$path\\chat_history.json'); // TODO: make this cross-platform (windows, mac, linux, android, ios)
+    const fileName = 'chat_history.json';
+    if (Platform.isWindows) {
+      return File('$path\\$fileName');
+    } else {
+      return File('$path/$fileName');
+    }
   }
 
   Future<void> _initializeJsonFile() async {
@@ -48,7 +53,7 @@ class ChatHistoryManager {
     if (!chats.contains(title)) {
       final file = await _localFile;
       List<dynamic> jsonList = json.decode(await file.readAsString());
-      jsonList.add({
+      jsonList.insert(0, {
         'title': title,
         'messages': messages.map((msg) => msg.toJson()).toList(),
       });

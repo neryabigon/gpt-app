@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:gpt/gpt/models/chat_history_manager.dart';
 import 'package:image_downloader/image_downloader.dart';
+import '../constants.dart';
 import 'gpt_service.dart';
 import 'models/message.dart';
 
@@ -12,13 +13,15 @@ class ChatWidget extends StatefulWidget {
       required this.handleBrightnessChange,
       required this.gptService,
       required this.chatHistoryManager,
-      required this.showExtraIcons});
+      required this.showExtraIcons,
+      required this.onRefreshChatHistory,});
 
   final bool useLightMode;
   final Function(bool useLightMode) handleBrightnessChange;
   final GptService gptService;
   final ChatHistoryManager chatHistoryManager;
   final bool showExtraIcons;
+  final Function() onRefreshChatHistory;
 
 
   @override
@@ -33,7 +36,7 @@ class _ChatWidgetState extends State<ChatWidget> {
   void _handleUserMessage(String message) {
     // if the message is empty, pop a snackbar
     if (message.isEmpty) {
-      snack('Please enter a message');
+      snack(context, 'Please enter a message');
       return;
     }
     if (mounted) {
@@ -86,7 +89,7 @@ class _ChatWidgetState extends State<ChatWidget> {
   void _handleImageResponse(String prompt) async {
     // if the message is empty, pop a snackbar
     if (prompt.isEmpty) {
-      snack('Please enter a prompt');
+      snack(context, 'Please enter a prompt');
       return;
     }
     if (mounted) {
@@ -169,7 +172,7 @@ class _ChatWidgetState extends State<ChatWidget> {
                       hintText: 'Type your message',
                       border: const OutlineInputBorder(
                         borderRadius: BorderRadius.all(
-                          Radius.circular(50.0),
+                          Radius.circular(30.0),
                         ),
                       ),
                       contentPadding: const EdgeInsets.symmetric(
@@ -205,8 +208,14 @@ class _ChatWidgetState extends State<ChatWidget> {
                             // save chat icon button
                             IconButton(
                               onPressed: () {
-                                // save chat
-                                widget.chatHistoryManager.saveChat(widget.gptService.messages[0].text, widget.gptService.messages);
+                                if (widget.gptService.messages.isNotEmpty) {
+                                  // save chat
+                                  widget.chatHistoryManager.saveChat(widget.gptService.messages[0].text, widget.gptService.messages);
+                                  widget.onRefreshChatHistory();
+                                  snack(context, 'Chat saved');
+                                } else {
+                                  snack(context, 'Nothing to save');
+                                }
                               },
                               icon: const Icon(Icons.save),
                               tooltip: 'save chat',
@@ -280,10 +289,10 @@ class _ChatWidgetState extends State<ChatWidget> {
             child: InkWell(
                 onDoubleTap: () {
                   if (MediaQuery.of(context).size.width >= 500) {
-                    snack('not available on pc yet');
+                    snack(context, 'not available on pc yet');
                   } else {
                     _saveImage(msg.text);
-                    snack('Image saved to download folder');
+                    snack(context,'Image saved to download folder');
                   }
                 },
                 child: Image.network(msg.text)),
@@ -294,15 +303,15 @@ class _ChatWidgetState extends State<ChatWidget> {
   }
 
   // snackbar
-  void snack(String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(msg,
-            style:
-                TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color)),
-        duration: const Duration(milliseconds: 800),
-        backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
-      ),
-    );
-  }
+  // void snack(BuildContext context, String msg) {
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(
+  //       content: Text(msg,
+  //           style:
+  //               TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color)),
+  //       duration: const Duration(milliseconds: 800),
+  //       backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+  //     ),
+  //   );
+  // }
 }

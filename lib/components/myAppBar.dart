@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import '../constants.dart';
 import '../gpt/gpt_service.dart';
 import '../gpt/models/chat_history_manager.dart';
 
@@ -8,11 +8,13 @@ class MyAppBar extends StatefulWidget implements PreferredSizeWidget {
       {super.key,
       required this.useLightMode,
       required this.handleBrightnessChange,
-      required this.showExtraIcons});
+      required this.showExtraIcons,
+      required this.onRefreshChatHistory});
 
   final bool useLightMode;
   final Function(bool useLightMode) handleBrightnessChange;
   final bool showExtraIcons;
+  final Function() onRefreshChatHistory;
 
   @override
   State<MyAppBar> createState() => _MyAppBarState();
@@ -42,9 +44,15 @@ class _MyAppBarState extends State<MyAppBar> {
         // save chat icon button
         IconButton(
           onPressed: () {
-            // save chat
-            _chatHistoryManager.saveChat(
-                _gptService.messages[0].text, _gptService.messages);
+            if (_gptService.messages.isNotEmpty) {
+              // save chat
+              _chatHistoryManager.saveChat(
+                  _gptService.messages[0].text, _gptService.messages);
+              widget.onRefreshChatHistory();
+              snack(context, 'Chat saved');
+            } else {
+              snack(context, 'Nothing to save');
+            }
           },
           icon: const Icon(Icons.save),
           tooltip: 'save chat',
@@ -53,9 +61,9 @@ class _MyAppBarState extends State<MyAppBar> {
       IconButton(
         icon: widget.useLightMode
             ? Icon(Icons.wb_sunny_outlined,
-            color: Theme.of(context).colorScheme.onSurface)
+                color: Theme.of(context).colorScheme.onSurface)
             : Icon(Icons.wb_sunny,
-            color: Theme.of(context).colorScheme.onSurface),
+                color: Theme.of(context).colorScheme.onSurface),
         onPressed: () {
           widget.handleBrightnessChange(!widget.useLightMode);
         },
