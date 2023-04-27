@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:gpt/gpt/models/chat_history_manager.dart';
 import 'package:image_downloader/image_downloader.dart';
-import '../constants.dart';
+import '../components/constants.dart';
 import 'gpt_service.dart';
 import 'models/message.dart';
 

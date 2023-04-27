@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../constants.dart';
+import 'constants.dart';
 import '../gpt/gpt_service.dart';
 import '../gpt/models/chat_history_manager.dart';
 
