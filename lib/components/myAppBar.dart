@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'constants.dart';
-import '../gpt/gpt_service.dart';
+import '../gpt/models/gpt_service.dart';
 import '../gpt/models/chat_history_manager.dart';
 
 class MyAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -44,10 +44,10 @@ class _MyAppBarState extends State<MyAppBar> {
         // save chat icon button
         IconButton(
           onPressed: () {
-            if (_gptService.messages.isNotEmpty) {
+            if (_gptService.chat.messages.isNotEmpty) {
               // save chat
               _chatHistoryManager.saveChat(
-                  _gptService.messages[0].text, _gptService.messages);
+                  _gptService.chat.messages[0].text, _gptService.chat.messages);
               widget.onRefreshChatHistory();
               snack(context, 'Chat saved');
             } else {

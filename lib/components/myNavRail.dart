@@ -1,14 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:gpt/gpt/models/gpt_service.dart';
+import 'setting_widget.dart';
 
 class MyNavRail extends StatefulWidget {
-  const MyNavRail({Key? key}) : super(key: key);
+  const MyNavRail({
+    super.key,
+    required this.useLightMode,
+    required this.handleBrightnessChange, required this.gptService,
+  });
+
+  final bool useLightMode;
+  final Function(bool useLightMode) handleBrightnessChange;
+  final GptService gptService;
 
   @override
   State<MyNavRail> createState() => _MyNavRailState();
 }
 
 class _MyNavRailState extends State<MyNavRail> {
-  bool extanded = false;
+  bool extended = false;
   int _selectedIndex = 0;
 
   @override
@@ -20,56 +30,55 @@ class _MyNavRailState extends State<MyNavRail> {
           setState(() {
             _selectedIndex = index;
           });
-          // Navigator.pushNamed(context, '/dashboard');
         } else if (index == 1) {
           setState(() {
             _selectedIndex = index;
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text('Settings'),
+                  content: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.3, // Adjust the width of the popup
+                    child: SettingsWidget(
+                        handleBrightnessChange: widget.handleBrightnessChange,
+                        useLightMode: widget.useLightMode,
+                        gptService: widget.gptService),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Close'),
+                    ),
+                  ],
+                );
+              },
+            );
           });
-          // Navigator.pushNamed(context, '/settings');
         } else if (index == 2) {
           setState(() {
             _selectedIndex = index;
           });
-          // Navigator.pushNamed(context, '/about');
-        } else if (index == 3) {
-          setState(() {
-            _selectedIndex = index;
-          });
-          // Navigator.pushNamed(context, '/logout');
-        } else if (index == 4) {
-          setState(() {
-            extanded = !extanded;
-          });
         }
       },
-      destinations: [
-        const NavigationRailDestination(
+      destinations: const [
+        NavigationRailDestination(
           icon: Icon(Icons.home),
-          label: Text('Dashboard'),
+          label: Text('Home'),
         ),
-        const NavigationRailDestination(
+        NavigationRailDestination(
           icon: Icon(Icons.settings),
           label: Text('Settings'),
         ),
-        const NavigationRailDestination(
+        NavigationRailDestination(
           icon: Icon(Icons.info),
           label: Text('About'),
         ),
-        const NavigationRailDestination(
-          icon: Icon(Icons.logout),
-          label: Text('Logout'),
-        ),
-        NavigationRailDestination(
-          icon: extanded
-              ? const Icon(Icons.arrow_left)
-              : const Icon(Icons.arrow_right),
-          label: extanded ? const Text('collapse') : const Text('expand'),
-          padding:
-              EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.5),
-        ),
       ],
       selectedIndex: _selectedIndex,
-      extended: extanded,
+      extended: extended,
     );
   }
 }

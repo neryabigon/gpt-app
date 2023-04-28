@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gpt/components/myAppBar.dart';
-import 'package:gpt/gpt/chat_history_widget.dart';
-import 'package:gpt/gpt/chat_widget.dart';
-import 'package:gpt/gpt/gpt_service.dart';
-import 'package:gpt/gpt/model_setting_widget.dart';
+import 'package:gpt/gpt/widgets/chat_history_widget.dart';
+import 'package:gpt/gpt/widgets/chat_widget.dart';
+import 'package:gpt/gpt/models/gpt_service.dart';
+import 'package:gpt/gpt/widgets/model_setting_widget.dart';
 import '../../components/myNavRail.dart';
 import '../../gpt/models/chat_history_manager.dart';
 
@@ -30,6 +30,7 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
   void refresh() {
     setState(() {
       refreshNotifier.value = !refreshNotifier.value;
+      refreshNotifier.value = !refreshNotifier.value;
     });
   }
 
@@ -46,14 +47,17 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
         body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: SizedBox(
-            height: MediaQuery.of(context).size.height*0.9,
+            height: MediaQuery.of(context).size.height * 0.9,
             width: MediaQuery.of(context).size.width,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const MyNavRail(),
+                  MyNavRail(
+                      handleBrightnessChange: widget.handleBrightnessChange,
+                      useLightMode: widget.useLightMode,
+                      gptService: _gptService,),
                   // first half of page
                   Expanded(
                     flex: 3,
@@ -72,8 +76,8 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
                       scrollDirection: Axis.vertical,
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
-                        height: MediaQuery.of(context).size.height*0.85,
-                        width: MediaQuery.of(context).size.width*0.3,
+                        height: MediaQuery.of(context).size.height * 0.85,
+                        width: MediaQuery.of(context).size.width * 0.3,
                         child: Column(
                           children: [
                             Expanded(
@@ -83,7 +87,9 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
                                 child: SingleChildScrollView(
                                   scrollDirection: Axis.vertical,
                                   child: Container(
-                                      height: MediaQuery.of(context).size.height*0.4,
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.4,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(8),
                                         color: Theme.of(context)
@@ -97,7 +103,8 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
                                         chatHistoryManager: _chatHistoryManager,
                                         onLoadChat: (messages) {
                                           setState(() {
-                                            _gptService.messages = messages;
+                                            _gptService.chat.messages =
+                                                messages;
                                           });
                                         },
                                         refreshNotifier: refreshNotifier,
@@ -113,10 +120,13 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
                                 child: SingleChildScrollView(
                                   scrollDirection: Axis.vertical,
                                   child: Container(
-                                    height: MediaQuery.of(context).size.height*0.4,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.4,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(8),
-                                      color: Theme.of(context).colorScheme.secondary,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
                                     ),
                                     child: ModelSettingsWidget(
                                       useLightMode: widget.useLightMode,
@@ -137,7 +147,6 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
               ),
             ),
           ),
-        )
-    );
+        ));
   }
 }

@@ -2,19 +2,20 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:gpt/gpt/models/chat_history_manager.dart';
 import 'package:image_downloader/image_downloader.dart';
-import '../components/constants.dart';
-import 'gpt_service.dart';
-import 'models/message.dart';
+import '../../components/constants.dart';
+import '../models/gpt_service.dart';
+import '../models/message.dart';
 
 class ChatWidget extends StatefulWidget {
-  const ChatWidget(
-      {super.key,
-      required this.useLightMode,
-      required this.handleBrightnessChange,
-      required this.gptService,
-      required this.chatHistoryManager,
-      required this.showExtraIcons,
-      required this.onRefreshChatHistory,});
+  const ChatWidget({
+    super.key,
+    required this.useLightMode,
+    required this.handleBrightnessChange,
+    required this.gptService,
+    required this.chatHistoryManager,
+    required this.showExtraIcons,
+    required this.onRefreshChatHistory,
+  });
 
   final bool useLightMode;
   final Function(bool useLightMode) handleBrightnessChange;
@@ -23,15 +24,28 @@ class ChatWidget extends StatefulWidget {
   final bool showExtraIcons;
   final Function() onRefreshChatHistory;
 
-
   @override
   State<ChatWidget> createState() => _ChatWidgetState();
 }
 
 class _ChatWidgetState extends State<ChatWidget> {
-  final TextEditingController _textController = TextEditingController();
-  final ScrollController _scrollController = ScrollController();
+  late final TextEditingController _textController;
+  late final ScrollController _scrollController;
 
+  @override
+  void initState() {
+    // init the controllers
+    _textController = TextEditingController();
+    _scrollController = ScrollController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   void _handleUserMessage(String message) {
     // if the message is empty, pop a snackbar
@@ -41,7 +55,7 @@ class _ChatWidgetState extends State<ChatWidget> {
     }
     if (mounted) {
       setState(() {
-        widget.gptService.messages.add(Message(message, true, false));
+        widget.gptService.chat.addMessage(Message(message, true, false));
       });
     }
 
@@ -51,17 +65,22 @@ class _ChatWidgetState extends State<ChatWidget> {
     // temp var to hold the response
     String concatenatedResponse = '';
 
-    widget.gptService.getGptResponse(widget.gptService.messages).listen((response) {
+    widget.gptService.getGptResponse(widget.gptService.chat.messages).listen(
+        (response) {
       concatenatedResponse += response;
 
       // Update the UI with the concatenated response
       if (mounted) {
         setState(() {
-          if (widget.gptService.messages.isNotEmpty && widget.gptService.messages.last.isUser) {
-            widget.gptService.messages.add(Message(concatenatedResponse, false, false));
-          } else if (widget.gptService.messages.isNotEmpty && !widget.gptService.messages.last.isUser) {
-            widget.gptService.messages.removeLast();
-            widget.gptService.messages.add(Message(concatenatedResponse, false, false));
+          if (widget.gptService.chat.messages.isNotEmpty &&
+              widget.gptService.chat.messages.last.isUser) {
+            widget.gptService.chat.messages
+                .add(Message(concatenatedResponse, false, false));
+          } else if (widget.gptService.chat.messages.isNotEmpty &&
+              !widget.gptService.chat.messages.last.isUser) {
+            widget.gptService.chat.messages.removeLast();
+            widget.gptService.chat.messages
+                .add(Message(concatenatedResponse, false, false));
           }
         });
       }
@@ -70,11 +89,15 @@ class _ChatWidgetState extends State<ChatWidget> {
       debugPrint("Error: $error");
       if (mounted) {
         setState(() {
-          if (widget.gptService.messages.isNotEmpty && widget.gptService.messages.last.isUser) {
-            widget.gptService.messages.add(Message(concatenatedResponse, false, false));
-          } else if (widget.gptService.messages.isNotEmpty && !widget.gptService.messages.last.isUser) {
-            widget.gptService.messages.removeLast();
-            widget.gptService.messages.add(Message(concatenatedResponse, false, false));
+          if (widget.gptService.chat.messages.isNotEmpty &&
+              widget.gptService.chat.messages.last.isUser) {
+            widget.gptService.chat.messages
+                .add(Message(concatenatedResponse, false, false));
+          } else if (widget.gptService.chat.messages.isNotEmpty &&
+              !widget.gptService.chat.messages.last.isUser) {
+            widget.gptService.chat.messages.removeLast();
+            widget.gptService.chat.messages
+                .add(Message(concatenatedResponse, false, false));
           }
         });
       }
@@ -94,7 +117,7 @@ class _ChatWidgetState extends State<ChatWidget> {
     }
     if (mounted) {
       setState(() {
-        widget.gptService.messages.add(Message(prompt, true, false));
+        widget.gptService.chat.messages.add(Message(prompt, true, false));
       });
     }
 
@@ -105,7 +128,7 @@ class _ChatWidgetState extends State<ChatWidget> {
     widget.gptService.getDalleResponse(_textController.text).then((value) {
       if (mounted) {
         setState(() {
-          widget.gptService.messages.add(
+          widget.gptService.chat.messages.add(
             Message(
               value,
               false,
@@ -132,13 +155,6 @@ class _ChatWidgetState extends State<ChatWidget> {
   }
 
   @override
-  void dispose() {
-    _textController.dispose();
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -150,11 +166,12 @@ class _ChatWidgetState extends State<ChatWidget> {
             child: ListView.builder(
               controller: _scrollController,
               padding: const EdgeInsets.all(8),
-              itemCount: widget.gptService.messages.length,
+              itemCount: widget.gptService.chat.messages.length,
               itemBuilder: (BuildContext context, int index) {
-                return widget.gptService.messages[index].isImage
-                    ? _buildImageResponse(widget.gptService.messages[index])
-                    : _buildMessage(widget.gptService.messages[index]);
+                return widget.gptService.chat.messages[index].isImage
+                    ? _buildImageResponse(
+                        widget.gptService.chat.messages[index])
+                    : _buildMessage(widget.gptService.chat.messages[index]);
               },
             ),
           ),
@@ -208,9 +225,12 @@ class _ChatWidgetState extends State<ChatWidget> {
                             // save chat icon button
                             IconButton(
                               onPressed: () {
-                                if (widget.gptService.messages.isNotEmpty) {
+                                if (widget
+                                    .gptService.chat.messages.isNotEmpty) {
                                   // save chat
-                                  widget.chatHistoryManager.saveChat(widget.gptService.messages[0].text, widget.gptService.messages);
+                                  widget.chatHistoryManager.saveChat(
+                                      widget.gptService.chat.messages[0].text,
+                                      widget.gptService.chat.messages);
                                   widget.onRefreshChatHistory();
                                   snack(context, 'Chat saved');
                                 } else {
@@ -292,7 +312,7 @@ class _ChatWidgetState extends State<ChatWidget> {
                     snack(context, 'not available on pc yet');
                   } else {
                     _saveImage(msg.text);
-                    snack(context,'Image saved to download folder');
+                    snack(context, 'Image saved to download folder');
                   }
                 },
                 child: Image.network(msg.text)),
@@ -301,17 +321,4 @@ class _ChatWidgetState extends State<ChatWidget> {
       ),
     );
   }
-
-  // snackbar
-  // void snack(BuildContext context, String msg) {
-  //   ScaffoldMessenger.of(context).showSnackBar(
-  //     SnackBar(
-  //       content: Text(msg,
-  //           style:
-  //               TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color)),
-  //       duration: const Duration(milliseconds: 800),
-  //       backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
-  //     ),
-  //   );
-  // }
 }

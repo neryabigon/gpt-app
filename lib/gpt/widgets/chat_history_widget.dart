@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'models/chat_history_manager.dart';
-import 'models/message.dart';
+import '../models/chat_history_manager.dart';
+import '../models/message.dart';
 
 class ChatHistoryWidget extends StatefulWidget {
   const ChatHistoryWidget(
@@ -91,7 +91,7 @@ class _ChatHistoryWidgetState extends State<ChatHistoryWidget> {
                         },
                       ),
                       Container(
-                        height: 2.5*72.0,
+                        height: MediaQuery.of(context).size.width <= 500 ? 4*72.0 : 2.5*72.0,
                         child: ListView.builder(
                           itemCount: snapshot.data!.length,
                           itemBuilder: (context, index) {

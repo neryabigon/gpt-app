@@ -1,5 +1,5 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:gpt/platform/desktop/desktop_body.dart';
 import 'package:gpt/platform/tablet/tablet_body.dart';
 import 'platform/mobile/mobile_body.dart';
@@ -22,7 +22,7 @@ class _MyAppState extends State<MyApp> {
   bool get useLightMode {
     switch (themeMode) {
       case ThemeMode.system:
-        return SchedulerBinding.instance.window.platformBrightness ==
+        return PlatformDispatcher.instance.platformBrightness ==
             Brightness.light;
       case ThemeMode.light:
         return true;

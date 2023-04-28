@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gpt/gpt/chat_widget.dart';
-import 'package:gpt/gpt/gpt_service.dart';
+import 'package:gpt/gpt/widgets/chat_widget.dart';
+import 'package:gpt/gpt/models/gpt_service.dart';
 import '../../components/myAppBar.dart';
 import '../../components/my_drawer.dart';
 import '../../gpt/models/chat_history_manager.dart';
@@ -48,7 +48,7 @@ class _MobileScaffoldState extends State<MobileScaffold> {
         chatHistoryManager: _chatHistoryManager,
         onLoadChat: (messages) {
           setState(() {
-            _gptService.messages = messages;
+            _gptService.chat.messages = messages;
           });
         },
         refreshNotifier: refreshNotifier,
