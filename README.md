@@ -46,9 +46,3 @@ flutter run
 
 https://user-images.githubusercontent.com/66886354/234531566-acf68c2b-4726-4fa3-a08f-4b779011212d.mp4
 
-
-
-
-## Contributing
-
-If you want to contribute to this project, please follow the guidelines provided in the `CONTRIBUTING.md` file.
