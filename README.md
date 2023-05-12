@@ -18,22 +18,20 @@ To get started with the Flutter GPT Chat App, follow these steps:
 1. Clone the repository:
 
 ```
-git clone https://github.com/yourusername/flutter_gpt_chat_app.git
+git clone https://github.com/neryabigon/gpt-app.git
 ```
 
-2. Navigate to the project directory:
 
-```
-cd flutter_gpt_chat_app
-```
-
-3. Install dependencies:
+3. Open a teerminal in the main folder and install dependencies:
 
 ```
 flutter pub get
-```
+```  
 
-4. Run the app:
+
+4. Enter your OpenAi API key (mine will not work) in the [gpt_service](https://github.com/neryabigon/gpt-app/blob/main/lib/gpt/models/gpt_service.dart) file: 
+
+5. Run the app:
 
 ```
 flutter run
